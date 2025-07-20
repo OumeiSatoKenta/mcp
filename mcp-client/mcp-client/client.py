@@ -8,7 +8,7 @@ from mcp.client.stdio import stdio_client
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
-load_dotenv() # load enviroment variables from .env
+load_dotenv()  # load environment variables from .env
 
 class MCPClient:
     def __init__(self):
@@ -16,13 +16,13 @@ class MCPClient:
         self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
         self.anthropic = Anthropic()
-
     # methods will go here
+
     async def connect_to_server(self, server_script_path: str):
         """Connect to an MCP server
 
         Args:
-            server_script_path: Path to the server script(.py or .js)
+            server_script_path: Path to the server script (.py or .js)
         """
         is_python = server_script_path.endswith('.py')
         is_js = server_script_path.endswith('.js')
@@ -42,10 +42,10 @@ class MCPClient:
 
         await self.session.initialize()
 
-        # List awaitable tools
+        # List available tools
         response = await self.session.list_tools()
         tools = response.tools
-        print("\nConnected to the server with tools:", [tool.name for tool in tools])
+        print("\nConnected to server with tools:", [tool.name for tool in tools])
 
     async def process_query(self, query: str) -> str:
         """Process a query using Claude and available tools"""
@@ -71,7 +71,7 @@ class MCPClient:
             tools=available_tools
         )
 
-        # Procass response and handle tool calls
+        # Process response and handle tool calls
         final_text = []
 
         assistant_message_content = []
@@ -108,10 +108,11 @@ class MCPClient:
                     model="claude-3-5-sonnet-20241022",
                     max_tokens=1000,
                     messages=messages,
-                    tools = available_tools
+                    tools=available_tools
                 )
 
                 final_text.append(response.content[0].text)
+
         return "\n".join(final_text)
 
     async def chat_loop(self):
@@ -125,10 +126,10 @@ class MCPClient:
 
                 if query.lower() == 'quit':
                     break
-                
+
                 response = await self.process_query(query)
                 print("\n" + response)
-            
+
             except Exception as e:
                 print(f"\nError: {str(e)}")
 
